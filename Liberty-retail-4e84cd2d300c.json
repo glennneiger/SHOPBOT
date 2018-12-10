@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "liberty-retail",
+  "private_key_id": "4e84cd2d300c7d8c9d55e12e60d11e87795ac8b8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQClPLd+4xJUzVvF\n8REyg28CYmPDLnVRuHet9H1c4dPM7LOozvZMoXes+HW4EnatggSmsKXy8Mie1rBZ\naRGj1U0+aM3TudrVyraOZvQP6DdqghPbo70rHyamL+nQss3mmdGQI/cAMAxo0p+J\nqJ5Fg9CboGDb3ZSYl0ByUaiESDB5RYVWJPQqfIsGzOprDHCGJssCK7Xz6UkehLjy\nQBJHJchSapnMtAVUUHv+BtAr5o634k6j2Lw2GfzWF+QSDs+umHghW8k+QRqpSRbV\nHZaeCuTEOQkbTxkSZ75FGCuQaE6iNaI3549XljHB5x6hGB7Lshq3hOC0uxuqrhBg\nh/Lgx9C3AgMBAAECggEASAXdHauwU9JnTDI1gsUTYACu52aasJItaF+HPTMZ9Nq/\nvLbpWKGQ3o42EZPKsvpXOKkKzIfzinidyXsouzbAQpHAFaePIV0Ika2CeGSJsx0b\ntsL6M4+ScyGzUsp9QSSO2bszcJuA7TfRXllnE3nPNeaEEZHVsWVMLAg34eDtcA4Q\nCRn7UP60yh0t5KzY+VaIZY0JhXzQ0TJfWi1c0pL5xf+gkEsU/Y3gX4AfQaqyM3lE\nn8FVdNtQfvbTlsnrfSShcyOLP8BLgFaFxzfjfV2yFgETiao6O+SAvpriVjJBJihd\nm29b9CNKGVjJciOvmGmSd6GZwYhfgF/IG8SBEL86oQKBgQDWk85gUdlK1VOQGeum\nWc59g0NrbTjlbmfLoa9gdUb43m0ezHMXq9vZmDmFNEC/hfD+i52oKs/43wCZiPVI\n0jKVLpUM9rkU55cQXFTd+a9ovzzAO8K+oPLOga8jDMdmrC+NJqMWnO6SMeMyJABP\nEGjgOcL6OWLzKR7noojD80lOvwKBgQDFIpGdDNSYh8aH6lSpyLH51Bo3U1FI+2Fx\nehryYWcdYBUm+g4oYyfsP2fSWEFZj/AOrtduZO9h8/p3Ieaxi4IzP0zjgIy+N/jE\nlnNGJ2usmDdBu6rueLWLdDpexRRbS2EeDIJUq/bg4z5iAQ2LMQzfW5zbrohPJGru\nfsHue1r0CQKBgEHw8j8PaCNjI2bpUE2y044mxJVC33VCVItziJ2v7LuWPxpz4fqo\nScu4yBRzVmKFGuZeqXiAj6D/hwOn3xkd34WQ5yUwvPf7o6TXew0sKgeanWTF+Lb0\nZymnGNdAmhanW4WZFg1g9L/grN0/ywiBFnmxxoV3FT18qY6tmDH/lcupAoGAbmMv\nGrxGh6rv9se25OPnFTg5/eT/zVhGdl6jnDoCnaZh8dNv/hmYD2hp4JVe8qHxEKfD\nJqQKj9Uo2XD4V08Bd2TozzP6m8GH4b1Fi3EjkCAkQQCvdJ3POum4jbzZ601IcqUa\njgNFWSSmmAZy6RBsXt5T9YfD+F0yK557Rel5QtECgYBaBUwFA0Sn/zQWHjm/3Zuf\nRlKIad8LDbXrkr1rDBUmCoBjX0GNZ8Ckr2xlcdItujy0GruaC9lwob614rx5+Qq+\ngxjE0jRBOxvfHo1/SSIjUj+SfAVHrjmuEgWJThMyM27qakBkE3P02S863LM/qf5v\nf/a33ORVSwb7pO+0W65kDQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "dialogflow-iocvrg@liberty-retail.iam.gserviceaccount.com",
+  "client_id": "105014713640501634418",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dialogflow-iocvrg%40liberty-retail.iam.gserviceaccount.com"
+}
