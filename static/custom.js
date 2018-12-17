@@ -13,7 +13,6 @@ const channel = pusher.subscribe('RETAIL_BOT');
     $('.chat-container').append(`
         <div class="chat-message col-md-5 human-message">
             ${input_message}
-
         </div>
     `)
 
@@ -28,6 +27,10 @@ const channel = pusher.subscribe('RETAIL_BOT');
 
 //submit_mess@ge will be invoked once the user submits the message
 function submit_message(message) {
+
+    // This should scroll to bottom of chat-container each time a message is submitted
+    // (user and bot both call this?? or need this in other places too...
+
 
     $.post( "/send_message", {
         message: message,
@@ -45,44 +48,69 @@ function submit_message(message) {
                     ${data.message}
 
 
-
                 </div>
             `)
+            $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
       } else {
           //var obj = JSON.parse(data.message);
-
-            $('.chat-container').append(`
-
-                <div class="chat-message col-md-20 offset-md-17 bot-message">
-                    <h2> Your Top ${data.rows} Products</h2>
-                    <table class="w3-table col-md-12">
-                        <tr class="col-md-12">
-                            <th class="col-md-2"> Product_num</th>
-                            <th class="col-md-2"> Name</th>
-                            <th class="col-md-2"> description</th>
-                            <th class="col-md-2"> sale_price</th>
-                            <th class="col-md-2"> list_price</th>
-                            <th class="col-md-2"> Reviews</th>
-                        </tr>
-                        $i = 1
-                        while ($i < ${data.rows})
-                        {
-                        <tr>
-                            <td> product-1</td>
-                            <td> ${data['products']['1']['name_title']}</td>
-                            <td> ${data['products']['1']['description']}</td>
-                            <td> ${data['products']['1']['sale_price']}</td>
-                            <td> ${data['products']['1']['list_price']}</td>
-                            <td> ${data['products']['1']['Reviews']}</td>
-                        </tr>
-                        $i++
-                        }
-                    </table>
-
-
-                </div>
+          $('.chat-container').append(`
+              <div class="chat-message col-md-20 offset-md-17 bot-message">
+                  <h2> Your Top ${data.rows} Products</h2>
+                  <table class="w3-table col-md-12" id="product-table">
+                      <tr class="col-md-12">
+                          <th class="col-md-2"> Product_num</th>
+                          <th class="col-md-2"> Name</th>
+                          <th class="col-md-2"> description</th>
+                          <th class="col-md-2"> sale_price</th>
+                          <th class="col-md-2"> list_price</th>
+                          <th class="col-md-2"> Reviews</th>
+                      </tr>
+                  </table>
+              </div>
             `)
+
+          $('#product-table').append(
+            $.map(data.products, function(row, i) {
+              return (
+                '<tr>' +
+                  '<td>' + data.products[i].
+                  '<td>' + data.products[i].name_title + '</td>' +
+                  '<td>' + data.products[i].description + '</td>' +
+                  '<td>' + data.products[i].sale_price + '</td>' +
+                  '<td>' + data.products[i].list_price + '</td>' +
+                  // TODO input box here
+                  // '<td>' + 'Quantity: ' + '<input>' + '</td>' +
+                  '<td>' + data.products[i].Reviews.substring(0,50) + '</td>' +
+
+                  /*
+                  <td> ${data['products'][i]['name_title']}</td> +
+                  <td> ${data['products'][i]['description']}</td> +
+                  <td> ${data['products'][i]['sale_price']}</td> +
+                  <td> ${data['products'][i]['list_price']}</td> +
+                  <td> ${data['products'][i]['Reviews'.substring(0,50)]}</td> +
+                  */
+
+                '</tr>'
+              )})
+          )
+
+          //             $i = 1
+          //             while ($i < ${data.rows})
+          //             {
+          //             <tr>
+          //                 <td> product-1</td>
+          //                 <td> ${data['products']['1']['name_title']}</td>
+          //                 <td> ${data['products']['1']['description']}</td>
+          //                 <td> ${data['products']['1']['sale_price']}</td>
+          //                 <td> ${data['products']['1']['list_price']}</td>
+          //                 <td> ${data['products']['1']['Reviews']}</td>
+          //             </tr>
+          //             $i++
+          //             }
+          //         </table>
+          //     </div>
+          // `)
       }
       // remove the loading indicator
       $( "#loading" ).remove();
