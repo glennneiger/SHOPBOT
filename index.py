@@ -8,6 +8,7 @@ import json
 import pusher
 import pypyodbc
 import hashlib
+import random
 pusher_client = pusher.Pusher(
         app_id=os.getenv('PUSHER_APP_ID'),
         key=os.getenv('PUSHER_KEY'),
@@ -54,34 +55,43 @@ def get_product_detail():
     #data.get("result").get("action") == "productQuery"
 
     if  data['queryResult']['action'] == "productQuery":
+        # name, phone-num ,email of the user
 
+        name = data['queryResult']['parameters']['given-name']
+        phone_num =  data['queryResult']['parameters']['phone-number']
+        email_id = data['queryResult']['parameters']['email']
+        print(type(name)); print(type(phone_num)); print(type(email_id))
+
+        sql_user_info(name,phone_num,email_id)
 
     #if bool(set(list(data['queryResult']['parameters'].keys())) & set(['ProductCategory','userCategory','Product-type'])):
 
         product_category = data['queryResult']['parameters']['ProductCategory']
         user_category = data['queryResult']['parameters']['userCategory']
         product_type = data['queryResult']['parameters']['Product-type']
+
         print(product_category,user_category,product_type)
-
-
 
 # #------API CALL TO SQL SERVER----------------
         global product_summary
         # python-sql connect is working
-        product_summary = python_sql(product_category,user_category , product_type )
+        product_summary = sql_product_info(product_category,user_category , product_type )
         global product_new
-        product_new = {'1': {}}
+        product_new={}
+
         column_names = ['name_title', 'description', ' sale_price', 'list_price', 'Reviews']
-        print(product_summary[1][1])
+        #print(product_summary[1][1])
 
         try:
-            for i, v in enumerate(column_names,0):
-                product_new['1'][v] = product_summary[1][i]
+            for k, val in product_summary.items():
+                product_new[str(k)]={}
+                for i, v in enumerate(column_names,0):
+                    product_new[str(k)][v] = product_summary[k][i]
 
             print(product_new)
 
         except:
-            print("WHAT THE FUCK")
+           print("WHAT THE FUCK")
 
 
         response =  """
@@ -115,7 +125,7 @@ def intent_hash(x):
     return result.hexdigest()
 
 #CALLING THE INFO FROM THE SQL SERVER
-def python_sql(x,y,z):
+def sql_product_info(x,y,z):
     """
     
     :param x: intent name
@@ -124,7 +134,7 @@ def python_sql(x,y,z):
     #hash_output = intent_hash(x)
     connection = pypyodbc.connect(DRIVER= '{SQL Server}', SERVER = 'LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB', trusted_connection='yes')
     cursor = connection.cursor()
-    SQLCommand = (" SELECT TOP 5 * FROM ( SELECT name_title, description , sale_price,list_price, Reviews FROM JCPENNY WHERE Product_Category = ?  AND User_Type = ?  AND Product_Type = ?) T ORDER BY list_price DESC"  )
+    SQLCommand = (" SELECT TOP 5 * FROM ( SELECT product_id, name_title, description , sale_price,list_price, Reviews FROM JCPENNY WHERE Product_Category = ?  AND User_Type = ?  AND Product_Type = ?) T ORDER BY list_price DESC"  )
     #SQLCommand = ("SELECT AVG(list_price) FROM JCPENNY WHERE Product_Category = ?")
 
 
@@ -139,6 +149,35 @@ def python_sql(x,y,z):
         products[i] = row
         i+=1
     return products
+
+def sql_user_info(name, phone_num, email_id):
+    global userID
+    userID = str(user_id())
+    #print(type(userID))
+    phone_num = str(phone_num)
+    connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
+                                  trusted_connection='yes')
+    cursor = connection.cursor()
+    SQLCommand = ("INSERT INTO USERINFO (User_id, Name, Email_id,Mobile_num) VALUES (?,?,?,?)")
+    Values = [userID,name,phone_num,email_id]
+    cursor.execute(SQLCommand,Values)
+    connection.commit()
+    connection.close()
+    return 'done'
+
+def sql_order_summary(order_id, userID, PRODUCT_ID, QUANTITY):
+
+
+    return
+
+
+
+def user_id():
+    return random.randint(1,101)#random userid
+
+def order_id():
+    return random.randint(1,101) # random orderid
+
 
 # USER SUBMITS A MESSAGE, MESSAGE WILL BE SENT TO DIALOGFLOW TO DETECT THE
 #INTENT OF THE USER. DIALOGFLOW WILL PROCESS THE TEXT, THEN SEND BACK A
@@ -167,19 +206,29 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
         return response.query_result.fulfillment_text
 
+
+@app.route('/order_summary', methods = ['POST'])
+def order_summary():
+    global orderID
+    orderID = str(order_id())
+    order  = request.form['message'] # should have product_id and quantity info in a json object
+
+    # call sql_order_summary function
+
+
 @app.route('/send_message', methods=['POST'])
 def send_message():
     message = request.form['message']
     project_id = os.getenv('DIALOGFLOW_PROJECT_ID')
     fulfillment_text = detect_intent_texts(project_id, "unique", message, 'en')
     #fulfillment_text = json.loads(fulfillment_text)
-    print(fulfillment_text)
+    #print(fulfillment_text)
 
     if "You have chosen" in fulfillment_text:
-        print(product_summary)
+        #print(product_summary)
         #print(product_summary[1].split(','))
-        print(type(product_summary[1]))
-        print(product_summary[1][0])
+        #print(type(product_summary[1]))
+        #print(product_summary[1][0])
 
 
         response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : product_new,"rows":len(product_new) }
