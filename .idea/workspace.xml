@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="311b25d2-1a33-4b5b-967f-79ce1d26632c" name="Default" comment="1. FUNCTION FOR STORING 'USERINFO' - DONE&#10;2. ROUTE FOR 'ORDER_SUMMARY' ADDED- NEED TO CONFIRM&#10;3. FUNCTIONS FOR GENERATING 'ORDER_ID' , 'USER_ID' - DONE&#10;4. HAVE TO DO THE DYNAMIC WAY OF STROING THE ORDER SUMMARY INTO&#10;   ORDER_SUMMARY TABLE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flaskr.egg-info/PKG-INFO" beforeDir="false" afterPath="$PROJECT_DIR$/flaskr.egg-info/PKG-INFO" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/custom.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +30,8 @@
       <file leaf-file-name="index.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+            <state relative-caret-position="-394">
+              <caret line="91" lean-forward="true" selection-start-line="91" selection-end-line="91" />
               <folding>
                 <element signature="e#13#71#0" expanded="true" />
               </folding>
@@ -57,8 +56,8 @@
       <file leaf-file-name="custom.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/custom.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="76" column="44" selection-start-line="76" selection-start-column="44" selection-end-line="76" selection-end-column="44" />
+            <state relative-caret-position="-1547">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
             </state>
           </provider>
         </entry>
@@ -125,7 +124,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="676" />
+    <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="735" />
   </component>
@@ -142,26 +141,6 @@
             <path>
               <item name="RETAIL_BOT" type="b2602c69:ProjectViewProjectNode" />
               <item name="RETAIL_BOT" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RETAIL_BOT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RETAIL_BOT" type="462c0819:PsiDirectoryNode" />
-              <item name="dist" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RETAIL_BOT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RETAIL_BOT" type="462c0819:PsiDirectoryNode" />
-              <item name="env" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RETAIL_BOT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RETAIL_BOT" type="462c0819:PsiDirectoryNode" />
-              <item name="flaskr.egg-info" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="RETAIL_BOT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RETAIL_BOT" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -217,14 +196,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info anchor="bottom" id="TODO" order="10" sideWeight="0.49924356" visible="true" weight="0.1879085" />
-      <window_info anchor="bottom" id="Event Log" order="3" sideWeight="0.50075644" side_tool="true" visible="true" weight="0.1879085" />
+      <window_info anchor="bottom" id="TODO" order="10" sideWeight="0.5340393" weight="0.30555555" />
+      <window_info anchor="bottom" id="Event Log" order="3" sideWeight="0.22314675" side_tool="true" visible="true" weight="0.09313726" />
       <window_info anchor="bottom" id="Run" order="6" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Python Console" order="1" sideWeight="0.4977307" weight="0.32843137" />
-      <window_info anchor="bottom" id="Terminal" order="2" sideWeight="0.7776097" weight="0.05392157" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.34114978" />
+      <window_info anchor="bottom" id="Terminal" order="2" sideWeight="0.77685326" visible="true" weight="0.09313726" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.22768533" />
       <window_info anchor="right" id="R Packages" order="2" />
       <window_info anchor="right" id="R Graphics" order="0" />
       <window_info anchor="bottom" id="Find" order="5" />
@@ -576,15 +556,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/custom.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="76" column="44" selection-start-line="76" selection-start-column="44" selection-end-line="76" selection-end-column="44" />
+        <state relative-caret-position="-1547">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+        <state relative-caret-position="-394">
+          <caret line="91" lean-forward="true" selection-start-line="91" selection-end-line="91" />
           <folding>
             <element signature="e#13#71#0" expanded="true" />
           </folding>

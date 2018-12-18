@@ -30,7 +30,7 @@ function submit_message(message) {
 
     // This should scroll to bottom of chat-container each time a message is submitted
     // (user and bot both call this?? or need this in other places too...
-
+    $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
     $.post( "/send_message", {
         message: message,
@@ -47,41 +47,48 @@ function submit_message(message) {
                 <div class="chat-message col-md-5 offset-md-7 bot-message">
                     ${data.message}
 
-
                 </div>
             `)
-            $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
       } else {
           //var obj = JSON.parse(data.message);
           $('.chat-container').append(`
-              <div class="chat-message col-md-20 offset-md-17 bot-message">
-                  <h2> Your Top ${data.rows} Products</h2>
-                  <table class="w3-table col-md-12" id="product-table">
-                      <tr class="col-md-12">
-                          <th class="col-md-2"> Product_num</th>
-                          <th class="col-md-2"> Name</th>
-                          <th class="col-md-2"> description</th>
-                          <th class="col-md-2"> sale_price</th>
-                          <th class="col-md-2"> list_price</th>
-                          <th class="col-md-2"> Reviews</th>
-                      </tr>
-                  </table>
-              </div>
+              <form>
+                  <div class="chat-message col-md-20 offset-md-17 bot-message">
+                      <h2> Your Top ${data.rows} Products</h2>
+                      <table class="w3-table col-md-12" id="product-table">
+                          <tr class="col-md-12">
+                              <th class="col-md-2"> Product_num</th>
+                              <th class="col-md-2"> Name</th>
+                              <th class="col-md-2"> description</th>
+                              <th class="col-md-2"> sale_price</th>
+                              <th class="col-md-2"> list_price</th>
+                              <th class="col-md-2"> Reviews</th>
+                              <th class="col-md-2"> Quantity</th>
+                          </tr>
+                      </table>
+                  </div>
+//                  <div>
+//                    <input type="submit" value="Submit" >
+//                  </div>
+              </form>
             `)
 
           $('#product-table').append(
             $.map(data.products, function(row, i) {
               return (
                 '<tr>' +
-                  '<td>' + data.products[i].
+                  '<td>' + data.products[i].product_id + '</td>' +
                   '<td>' + data.products[i].name_title + '</td>' +
                   '<td>' + data.products[i].description + '</td>' +
                   '<td>' + data.products[i].sale_price + '</td>' +
                   '<td>' + data.products[i].list_price + '</td>' +
-                  // TODO input box here
-                  // '<td>' + 'Quantity: ' + '<input>' + '</td>' +
                   '<td>' + data.products[i].Reviews.substring(0,50) + '</td>' +
+
+                  // TODO input box here
+                  '<td>' +
+                    '<input type="text" name="' + data.products[i].product_id + '" minlength="1" maxlength="2" size="1" />' +
+                  '</td>' +
 
                   /*
                   <td> ${data['products'][i]['name_title']}</td> +
@@ -92,8 +99,14 @@ function submit_message(message) {
                   */
 
                 '</tr>'
+
               )})
           )
+          $("form").submit(function( event ) {
+            console.log($(this).serializeArray());
+            alert('Thank you for placing your order');
+            event.preventDefault();
+          });
 
           //             $i = 1
           //             while ($i < ${data.rows})
