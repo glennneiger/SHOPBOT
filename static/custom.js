@@ -52,34 +52,42 @@ function submit_message(message) {
       } else {
           //var obj = JSON.parse(data.message);
           $('.chat-container').append(`
+            <form>
               <div class="chat-message col-md-20 offset-md-17 bot-message">
                   <h2> Your Top ${data.rows} Products</h2>
-                  <table class="w3-table col-md-12" id="product-table">
-                      <tr class="col-md-12">
-                          
-                          <th class="col-md-2"> Name</th>
-                          <th class="col-md-2"> description</th>
-                          <th class="col-md-2"> sale_price</th>
-                          <th class="col-md-2"> list_price</th>
-                          <th class="col-md-2"> Reviews</th>
+                  <table class="table-responsive table-striped table-hover col-md-12" id="product-table">
+                      <tr class="col-md-12">                          
+                          <th class="col-md-2">Name</th>
+                          <th class="col-md-2">Description</th>
+                          <th class="col-md-2">Sale_price</th>
+                          <th class="col-md-2">List_price</th>
+                          <th class="col-md-2" style="min-width: 150px;">Reviews</th>
+                          <th class="col-md">Quantity</th>
                       </tr>
                   </table>
               </div>
+            </form>
             `)
 
           $('#product-table').append(
             $.map(data.products, function(row, i) {
               return (
-                '<tr>' +
+                '<tr class="col-md-12">' +
                   // was product ID column here
-                  '<td>' + data.products[i].name_title + '</td>' +
-                  '<td>' + data.products[i].description + '</td>' +
-                  '<td>' + data.products[i].sale_price + '</td>' +
-                  '<td>' + data.products[i].list_price + '</td>' +
-                  // TODO input box here
-                  // '<td>' + 'Quantity: ' + '<input>' + '</td>' +
-                  '<td>' + data.products[i].Reviews.substring(0,50) + '</td>' +                  
-
+                  '<td class="col-md-2">' + data.products[i].name_title + '</td>' +
+                  '<td class="col-md-2">' + data.products[i].description + '</td>' +
+                  '<td class="col-md-2">' + data.products[i].sale_price + '</td>' +
+                  '<td class="col-md-2">' + data.products[i].list_price + '</td>' +                  
+                  '<td class="col-md-2">' + data.products[i].Reviews.substring(0,50) + '</td>' +    
+                  // Qty input box
+                  '<td class="col-md-2">' + 
+                    '<input type="text" name="' + data.products[i].product_num + '" minlength="1" maxlength="2" size="1" />' +                    
+                  '</td>' + 
+                '</tr>' +
+                // The place order button is placed in the last column of another row for formatting
+                '<tr>' +          
+                  '<td></td><td></td><td></td><td></td><td></td>' +
+                  '<td><input class="order-btn" type="submit" value="Place Order"></td>' +
                 '</tr>'
               )})
           )
@@ -91,10 +99,16 @@ function submit_message(message) {
             alert('Thank you for placing your order');
             event.preventDefault();   
           });  
+
+          // Here is where we can returned serialized array?
+          return $(this).serializeArray();
           
-      }
+      } // end of else for bot reply
+
       // remove the loading indicator
       $( "#loading" ).remove();
+
+      
     }
 }
 
