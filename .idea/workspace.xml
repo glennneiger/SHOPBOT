@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="311b25d2-1a33-4b5b-967f-79ce1d26632c" name="Default" comment="1. FUNCTION FOR STORING 'USERINFO' - DONE&#10;2. ROUTE FOR 'ORDER_SUMMARY' ADDED- NEED TO CONFIRM&#10;3. FUNCTIONS FOR GENERATING 'ORDER_ID' , 'USER_ID' - DONE&#10;4. HAVE TO DO THE DYNAMIC WAY OF STROING THE ORDER SUMMARY INTO&#10;   ORDER_SUMMARY TABLE">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/custom.js" afterDir="false" />
-    </list>
+    <list default="true" id="311b25d2-1a33-4b5b-967f-79ce1d26632c" name="Default" comment="1. FUNCTION FOR STORING 'USERINFO' - DONE&#10;2. ROUTE FOR 'ORDER_SUMMARY' ADDED- NEED TO CONFIRM&#10;3. FUNCTIONS FOR GENERATING 'ORDER_ID' , 'USER_ID' - DONE&#10;4. HAVE TO DO THE DYNAMIC WAY OF STROING THE ORDER SUMMARY INTO&#10;   ORDER_SUMMARY TABLE" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
