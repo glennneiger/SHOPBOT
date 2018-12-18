@@ -59,7 +59,7 @@ function submit_message(message) {
                   <h2> Your Top ${data.rows} Products</h2>
                   <table class="w3-table col-md-12" id="product-table">
                       <tr class="col-md-12">
-                          <th class="col-md-2"> Product_num</th>
+                          <th class="col-md-2"> Product_id</th>
                           <th class="col-md-2"> Name</th>
                           <th class="col-md-2"> description</th>
                           <th class="col-md-2"> sale_price</th>
@@ -74,7 +74,7 @@ function submit_message(message) {
             $.map(data.products, function(row, i) {
               return (
                 '<tr>' +
-                  '<td>' + data.products[i].
+                  '<td>' + data.products[i].product_id + '</td>' +
                   '<td>' + data.products[i].name_title + '</td>' +
                   '<td>' + data.products[i].description + '</td>' +
                   '<td>' + data.products[i].sale_price + '</td>' +

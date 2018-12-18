@@ -58,7 +58,7 @@ def get_product_detail():
         global product_new
         product_new={}
 
-        column_names = ['name_title', 'description', ' sale_price', 'list_price', 'Reviews']
+        column_names = ['product_id','name_title', 'description', ' sale_price', 'list_price', 'Reviews']
         #print(product_summary[1][1])
 
         try:
@@ -145,6 +145,8 @@ def sql_user_info(name, phone_num, email_id):
     return 'done'
 
 def sql_order_summary(order_id, userID, PRODUCT_ID, QUANTITY):
+    global orderID
+    orderID = str(order_id())
 
 
     return
@@ -188,8 +190,8 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 @app.route('/order_summary', methods = ['POST'])
 def order_summary():
-    global orderID
-    orderID = str(order_id())
+
+
     order  = request.form['message'] # should have product_id and quantity info in a json object
 
     # call sql_order_summary function
