@@ -43,11 +43,8 @@ function submit_message(message) {
       //var obj = JSON.parse(data.message);
       if(data.call=='notwebhook') {
             $('.chat-container').append(`
-
                 <div class="chat-message col-md-5 offset-md-7 bot-message">
                     ${data.message}
-
-
                 </div>
             `)
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
@@ -59,7 +56,7 @@ function submit_message(message) {
                   <h2> Your Top ${data.rows} Products</h2>
                   <table class="w3-table col-md-12" id="product-table">
                       <tr class="col-md-12">
-                          <th class="col-md-2"> Product_num</th>
+                          
                           <th class="col-md-2"> Name</th>
                           <th class="col-md-2"> description</th>
                           <th class="col-md-2"> sale_price</th>
@@ -74,43 +71,27 @@ function submit_message(message) {
             $.map(data.products, function(row, i) {
               return (
                 '<tr>' +
-                  '<td>' + data.products[i].
+                  // was product ID column here
                   '<td>' + data.products[i].name_title + '</td>' +
                   '<td>' + data.products[i].description + '</td>' +
                   '<td>' + data.products[i].sale_price + '</td>' +
                   '<td>' + data.products[i].list_price + '</td>' +
                   // TODO input box here
                   // '<td>' + 'Quantity: ' + '<input>' + '</td>' +
-                  '<td>' + data.products[i].Reviews.substring(0,50) + '</td>' +
-
-                  /*
-                  <td> ${data['products'][i]['name_title']}</td> +
-                  <td> ${data['products'][i]['description']}</td> +
-                  <td> ${data['products'][i]['sale_price']}</td> +
-                  <td> ${data['products'][i]['list_price']}</td> +
-                  <td> ${data['products'][i]['Reviews'.substring(0,50)]}</td> +
-                  */
+                  '<td>' + data.products[i].Reviews.substring(0,50) + '</td>' +                  
 
                 '</tr>'
               )})
           )
 
-          //             $i = 1
-          //             while ($i < ${data.rows})
-          //             {
-          //             <tr>
-          //                 <td> product-1</td>
-          //                 <td> ${data['products']['1']['name_title']}</td>
-          //                 <td> ${data['products']['1']['description']}</td>
-          //                 <td> ${data['products']['1']['sale_price']}</td>
-          //                 <td> ${data['products']['1']['list_price']}</td>
-          //                 <td> ${data['products']['1']['Reviews']}</td>
-          //             </tr>
-          //             $i++
-          //             }
-          //         </table>
-          //     </div>
-          // `)
+          // This is the logic for when the table of products is submitted, it will return
+          // a product id and qty inputted as JSON object, for now it is just console logging it
+          $("form").submit(function( event ) {               
+            console.log($(this).serializeArray());
+            alert('Thank you for placing your order');
+            event.preventDefault();   
+          });  
+          
       }
       // remove the loading indicator
       $( "#loading" ).remove();
