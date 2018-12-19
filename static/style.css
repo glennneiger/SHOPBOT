@@ -18,15 +18,13 @@ body,html {
 .bot-message {
   float: right;
   width: 80%;
-  background: red;
-  color: white;
+  background-color: #e1e4ea;
 }
 
 .human-message {
   float: left;
   width: 80%;
-  background: dodgerblue;
-  color: white;
+  background: #b5b8bc;
   margin: 13px 1px;
 }
 
@@ -36,4 +34,8 @@ body,html {
   height: 60px;
   border: 1px solid rosybrown;
   border-radius: 3px;
+}
+
+#order-btn {
+  float: right;
 }

@@ -31,7 +31,6 @@ function submit_message(message) {
     // This should scroll to bottom of chat-container each time a message is submitted
     // (user and bot both call this?? or need this in other places too...
 
-
     $.post( "/send_message", {
         message: message,
         socketId: pusher.connection.socket_id
@@ -53,25 +52,39 @@ function submit_message(message) {
           //var obj = JSON.parse(data.message);
           $('.chat-container').append(`
             <form>
-              <div class="chat-message col-md-20 offset-md-17 bot-message">
-                  <h2> Your Top ${data.rows} Products</h2>
-                  <table class="table-responsive table-striped table-hover col-md-12" id="product-table">
-                      <tr class="col-md-12">                          
-                          <th class="col-md-2">Name</th>
-                          <th class="col-md-2">Description</th>
-                          <th class="col-md-2">Sale_price</th>
-                          <th class="col-md-2">List_price</th>
-                          <th class="col-md-2" style="min-width: 150px;">Reviews</th>
-                          <th class="col-md">Quantity</th>
-                      </tr>
-                  </table>
-              </div>
+                <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
+                    <h2> Your Top ${data.rows} Products</h2>
+                    <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="product-table">
+                        <thead>
+                            <tr class="col-md-12">                          
+                                <th class="col-md-2">Name</th>
+                                <th class="col-md-2">Description</th>
+                                <th class="col-md-2">Sale_price</th>
+                                <th class="col-md-2">List_price</th>
+                                <th class="col-md-2" style="min-width: 150px;">Reviews</th>
+                                <th class="col-md">Quantity</th>
+                            </tr>
+                        </thead>                        
+                    </table>
+
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-8">
+                          <p>Scroll right to enter quantity</p>
+                        </div>
+                        <div class="col-4">
+                          <input id="order-btn" class="btn-success" type="submit" value="Place Order">
+                        </div>                        
+                      </div>
+                    </div>
+
+                </div>
             </form>
             `)
 
           $('#product-table').append(
             $.map(data.products, function(row, i) {
-              return (
+              return (                
                 '<tr class="col-md-12">' +
                   // was product ID column here
                   '<td class="col-md-2">' + data.products[i].name_title + '</td>' +
@@ -81,27 +94,40 @@ function submit_message(message) {
                   '<td class="col-md-2">' + data.products[i].Reviews.substring(0,50) + '</td>' +    
                   // Qty input box
                   '<td class="col-md-2">' + 
-                    '<input type="text" name="' + data.products[i].product_num + '" minlength="1" maxlength="2" size="1" />' +                    
+                    '<input type="number" name="' + data.products[i].product_num + '" min="0" max="99" placeholder="0" />' +                       
                   '</td>' + 
-                '</tr>' +
-                // The place order button is placed in the last column of another row for formatting
-                '<tr>' +          
-                  '<td></td><td></td><td></td><td></td><td></td>' +
-                  '<td><input class="order-btn" type="submit" value="Place Order"></td>' +
-                '</tr>'
+                '</tr>'                 
               )})
           )
 
           // This is the logic for when the table of products is submitted, it will return
           // a product id and qty inputted as JSON object, for now it is just console logging it
-          $("form").submit(function( event ) {               
-            console.log($(this).serializeArray());
-            alert('Thank you for placing your order');
+          $("form").submit(function( event ) {
             event.preventDefault();   
+            var $data = $(this).serializeArray()
+            
+            // post form data as serialized array to another url to save the order
+            $.post( "/save_order_orsomething", {
+              data: $data,
+              socketId: pusher.connection.socket_id // do we need this?
+            }, function() {
+              // TODO some logic here either in front or back to return total price from quantity of selected rows
+              $('.chat-container').append(`
+                <div class="chat-message col-md-20 offset-md-17 bot-message">
+                  Thank you for your order. Here is your order summary:
+                  /////Some Table////
+                  shows items and order total
+                </div>
+              `)
+            });           
+
+            console.log($data);
+            alert('Thank you for placing your order');
+            
           });  
 
           // Here is where we can returned serialized array?
-          return $(this).serializeArray();
+          //return $(this).serializeArray();
           
       } // end of else for bot reply
 
@@ -111,6 +137,9 @@ function submit_message(message) {
       
     }
 }
+
+
+
 
 
 $('#target').on('submit', function(e){
