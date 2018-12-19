@@ -57,11 +57,11 @@ function submit_message(message) {
                     <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="product-table">
                         <thead>
                             <tr class="col-md-12">                          
-                                <th class="col-md-2">Name</th>
-                                <th class="col-md-2">Description</th>
-                                <th class="col-md-2">Sale_price</th>
-                                <th class="col-md-2">List_price</th>
-                                <th class="col-md-2" style="min-width: 150px;">Reviews</th>
+                                <th class="col-md">Name</th>
+                                <th class="col-md">Description</th>
+                                <th class="col-md">Sale_price</th>
+                                <th class="col-md">List_price</th>
+                                <th class="col-md" style="min-width: 150px;">Reviews</th>
                                 <th class="col-md">Quantity</th>
                             </tr>
                         </thead>                        
@@ -87,13 +87,13 @@ function submit_message(message) {
               return (                
                 '<tr class="col-md-12">' +
                   // was product ID column here
-                  '<td class="col-md-2">' + data.products[i].name_title + '</td>' +
-                  '<td class="col-md-2">' + data.products[i].description + '</td>' +
-                  '<td class="col-md-2">' + data.products[i].sale_price + '</td>' +
-                  '<td class="col-md-2">' + data.products[i].list_price + '</td>' +                  
-                  '<td class="col-md-2">' + data.products[i].Reviews.substring(0,50) + '</td>' +    
+                  '<td class="col-md">' + data.products[i].name_title + '</td>' +
+                  '<td class="col-md">' + data.products[i].description + '</td>' +
+                  '<td class="col-md">' + data.products[i].sale_price + '</td>' +
+                  '<td class="col-md">' + data.products[i].list_price + '</td>' +                  
+                  '<td class="col-md">' + data.products[i].Reviews.substring(0,50) + '</td>' +    
                   // Qty input box
-                  '<td class="col-md-2">' + 
+                  '<td class="col-md">' + 
                     '<input type="number" name="' + data.products[i].product_num + '" min="0" max="99" placeholder="0" />' +                       
                   '</td>' + 
                 '</tr>'                 
@@ -137,10 +137,6 @@ function submit_message(message) {
       
     }
 }
-
-
-
-
 
 $('#target').on('submit', function(e){
     e.preventDefault();
