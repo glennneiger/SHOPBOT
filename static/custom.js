@@ -80,7 +80,7 @@ function submit_message(message) {
 
                 </div>
             </form>
-            `)
+          `)
 
           $('#product-table').append(
             $.map(data.products, function(row, i) {
@@ -94,40 +94,52 @@ function submit_message(message) {
                   '<td class="col-md">' + data.products[i].Reviews.substring(0,50) + '</td>' +    
                   // Qty input box
                   '<td class="col-md">' + 
-                    '<input type="number" name="' + data.products[i].product_num + '" min="0" max="99" placeholder="0" />' +                       
+                    '<input type="number" name="' + data.products[i].product_id + '" min="0" max="99" placeholder="0" />' +                       
                   '</td>' + 
                 '</tr>'                 
               )})
           )
 
+          $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+
           // This is the logic for when the table of products is submitted, it will return
           // a product id and qty inputted as JSON object, for now it is just console logging it
+                   
+
           $("form").submit(function( event ) {
-            event.preventDefault();   
-            var $data = $(this).serializeArray()
+            event.preventDefault(); 
+            var arr = [];           
+            var orderItems = $(this).serializeArray();  
+            orderItems.forEach(element => { 
+              if (element.value === '' || element.value === '0') {
+                //console.log('you got 0 value');
+              } else {
+                arr.push(element);
+              }
+            });
+
+            const orderStr = JSON.stringify(arr);
+            console.log(orderStr);
+
             
             // post form data as serialized array to another url to save the order
-            $.post( "/save_order_orsomething", {
-              data: $data,
-              socketId: pusher.connection.socket_id // do we need this?
+            $.post( "/order_summary", {
+              data: orderStr,              
             }, function() {
               // TODO some logic here either in front or back to return total price from quantity of selected rows
               $('.chat-container').append(`
                 <div class="chat-message col-md-20 offset-md-17 bot-message">
-                  Thank you for your order. Here is your order summary:
-                  /////Some Table////
-                  shows items and order total
+                  
+                  // Make table here
+
                 </div>
               `)
-            });           
-
-            console.log($data);
+            });
+            
             alert('Thank you for placing your order');
             
-          });  
-
-          // Here is where we can returned serialized array?
-          //return $(this).serializeArray();
+          }); // end of form submission and post 
+          
           
       } // end of else for bot reply
 
@@ -137,6 +149,7 @@ function submit_message(message) {
       
     }
 }
+
 
 $('#target').on('submit', function(e){
     e.preventDefault();
