@@ -57,6 +57,8 @@ def get_product_detail():
         product_summary = sql_product_info(product_category,user_category , product_type )
         global product_new
         product_new={}
+        global products_list
+        products_list = []
 
         column_names = ['product_id','name_title', 'description', ' sale_price', 'list_price', 'Reviews']
         #print(product_summary[1][1])
@@ -67,10 +69,19 @@ def get_product_detail():
                 for i, v in enumerate(column_names,0):
                     product_new[str(k)][v] = product_summary[k][i]
 
+
             print(product_new)
 
         except:
            print("WHAT THE FUCK")
+
+        ######################################################################################################################
+        # will convert a big json object to list of json objects.
+        for k,v in product_new.items():
+            #l = {}; l[k]=v
+            products_list.append(v)
+        print('my product list is {}, type is {}'.format(products_list, type(products_list)))
+        ######################################################################################################################
 
 
         response =  """
@@ -144,12 +155,25 @@ def sql_user_info(name, phone_num, email_id):
     connection.close()
     return 'done'
 
-def sql_order_summary(order_id, userID, PRODUCT_ID, QUANTITY):
+def sql_order_summary(userID, product_quantity):
     global orderID
     orderID = str(order_id())
+    connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
+                                  trusted_connection='yes')
+    cursor = connection.cursor()
+    SQLCommand = ("INSERT INTO ORDER_SUMMARY (ORDER_ID, User_id, PRODUCT_ID, QUANTITY) VALUES (?,?,?,?)")
+    # product_quantity is the one which will be returned from UI
+    for i in product_quantity:
+        Values = [orderID, userID, i['name'], i['value']]
+        cursor.execute(SQLCommand,Values)
+    #Values = [orderID, userID, product_quantity['name'], product_quantity['value']]
+    #cursor.execute(SQLCommand, Values)
+    connection.commit()
+    connection.close()
 
 
-    return
+
+    return 'done'
 
 
 
@@ -192,13 +216,22 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 def order_summary():
 
     order  = request.form['message'] # should have product_id and quantity info in a json object
+    order = json.loads(order)
+    print(type(order))
+    print(order)
 
+    sql_order_summary(userID, order)
+    # storing that order info in sql server
+    response = {'message': 'Thanks for placing the order, Do you want to order more or see your order summary'}
+
+    return jsonify(response)
     # call sql_order_summary function
 
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
     message = request.form['message']
+
     project_id = os.getenv('DIALOGFLOW_PROJECT_ID')
     fulfillment_text = detect_intent_texts(project_id, "unique", message, 'en')
     #fulfillment_text = json.loads(fulfillment_text)
@@ -211,7 +244,7 @@ def send_message():
         #print(product_summary[1][0])
 
 
-        response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : product_new,"rows":len(product_new) }
+        response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : products_list, "rows":len(product_new) }
 
 
     else:
