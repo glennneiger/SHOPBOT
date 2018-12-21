@@ -70,9 +70,10 @@ def get_product_detail():
                     product_new[str(k)][v] = product_summary[k][i]
 
 
-            print(product_new)
+            #print(product_new)
 
         except:
+
            print("WHAT THE FUCK")
 
         ######################################################################################################################
@@ -95,11 +96,43 @@ def get_product_detail():
 
         return jsonify(reply)
 
-    elif data['queryResult']['action'] == "purchase":
-        product_num = int(data['queryResult']['parameters']['order_summary'])
+    elif data['queryResult']['action'] == "order_summary":
+
+        #product_num = int(data['queryResult']['parameters']['order_summary'])
+        global order_summary_new
+        # python-sql connect is working
+        order_summary_new = user_order_summary()
+        global summary_new
+        summary_new = {}
+        global summary_list
+        summary_list = []
+
+        column_names_summary = ['name_title', 'quantity', 'list_price', 'price']
+        # print(product_summary[1][1])
+
+        try:
+            for k, val in order_summary_new.items():
+                summary_new[str(k)] = {}
+                for i, v in enumerate(column_names_summary, 0):
+                    summary_new[str(k)][v] = order_summary_new[k][i]
+
+            #print(summary_new)
+
+        except:
+
+            print("WHAT THE FUCK")
+
+        ######################################################################################################################
+        # will convert a big json object to list of json objects.
+        for k, v in summary_new.items():
+            # l = {}; l[k]=v
+            summary_list.append(v)
+        print('my summary list is {}, type is {}'.format(summary_list, type(summary_list)))
+        ######################################################################################################################
+
         response = """
         Here is your order summary: {0}
-        """.format( product_summary[product_num])
+        """.format(summary_list)
 
         reply = {
             "fulfillmentText": response
@@ -161,19 +194,37 @@ def sql_order_summary(userID, product_quantity):
     connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
                                   trusted_connection='yes')
     cursor = connection.cursor()
-    SQLCommand = ("INSERT INTO ORDER_SUMMARY (ORDER_ID, User_id, PRODUCT_ID, QUANTITY) VALUES (?,?,?,?)")
+    SQLCommand = ("INSERT INTO ORDER_SUMMARY (ORDER_ID, User_id, PRODUCT_ID, quantity_ordered) VALUES (?,?,?,?)")
     # product_quantity is the one which will be returned from UI
     for i in product_quantity:
-        Values = [orderID, userID, i['name'], i['value']]
+        Values = [orderID, userID, i['name'], int(i['value'])]
         cursor.execute(SQLCommand,Values)
     #Values = [orderID, userID, product_quantity['name'], product_quantity['value']]
     #cursor.execute(SQLCommand, Values)
     connection.commit()
     connection.close()
 
-
-
     return 'done'
+
+def user_order_summary():
+
+    connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
+                                  trusted_connection='yes')
+    cursor = connection.cursor()
+    SQLCommand = (
+        " sp_userOrderSummary ?")
+    # SQLCommand = ("SELECT AVG(list_price) FROM JCPENNY WHERE Product_Category = ?")
+
+    Values = [str(userID)]
+    cursor.execute(SQLCommand, Values)
+    # result = cursor.fetchone()
+    user_ordersummary = {}
+
+    i = 1
+    for row in cursor.fetchall():
+        user_ordersummary[i] = row
+        i += 1
+    return user_ordersummary
 
 
 
@@ -217,8 +268,8 @@ def order_summary():
 
     order  = request.form['message'] # should have product_id and quantity info in a json object
     order = json.loads(order)
-    print(type(order))
-    print(order)
+    #print(type(order))
+    #print(order)
 
     sql_order_summary(userID, order)
     # storing that order info in sql server
@@ -245,6 +296,11 @@ def send_message():
 
 
         response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : products_list, "rows":len(product_new) }
+
+    elif "order summary" in fulfillment_text:
+        response_text = {"message": fulfillment_text, "call": "summary", "products": summary_list,
+                         "rows": len(order_summary_new)}
+
 
 
     else:

@@ -48,7 +48,15 @@ function submit_message(message) {
             `)
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
-      } else {
+      }
+
+      else if(data.call == 'summary') {
+
+
+
+
+
+      }else {
           //var obj = JSON.parse(data.message);
           $('.chat-container').append(`
             <form>
