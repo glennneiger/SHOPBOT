@@ -110,29 +110,38 @@ function submit_message(message) {
         // This is the logic for when the table of products is submitted, it will return
         // a product id and qty inputted as JSON object
         $("form").submit(function( event ) {
-          event.preventDefault();
-          var data = JSON.stringify($(this).serializeArray());
+          event.preventDefault();    
+          var data = $(this).serializeArray();  
+          var selectedProducts = [];           
+          
+          data.forEach(element => { 
+            if (element.value === '' || element.value === '0') {
+              //console.log('you got 0 value');
+            } else {
+              selectedProducts.push(element);
+            }
+          });
 
           // post form data as serialized array to another url to save the order
           $.post( "/order_summary", {
-            message: data
+            message: selectedProducts
             //socketId: pusher.connection.socket_id // do we need this?
-          }, handle_response_new);
+          }, handle_response_new);         
 
 
           function handle_response_new(data) {
-            // TODO some logic here either in front or back to return total price from quantity of selected rows
-
+            
             $('.chat-container').append(`
               <div class="chat-message col-md-5 offset-md-7 bot-message">
                 ${data.message}
               </div>
             `)
 
-            // Order Summary bot reply
+            // Order Summary bot reply where does this go?            
             $('.chat-container').append(`
               <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">      
-                <h2> Your Order Summary</h2>
+                <h3>Ordered by: ${user.value.thingy}</h3>
+                <h5 id="order-date">Ordered on: </h5>
                 <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="summary-table">
                   <thead>
                     <tr class="col-md">
@@ -142,44 +151,97 @@ function submit_message(message) {
                     </tr>
                   </thead>
                 </table>
-                <div class="container">
-                  <div class="row">
-                    <div class="col-6">
-                      <p></p>
+
+                <div id="totals-container" class="container">
+                  <div class="row justify-content-end">
+                    <div id="subtotal" class="col-4">
+                      Subtotal: 
                     </div>
-                    <div class="col-6">
-                      <p id="order-total">
-                        Order Total: ${data.order_total}
-                      </p>
+                  </div>
+                  <div class="row justify-content-end">
+                    <div id="tax" class="col-4">
+                      Tax: 
+                    </div>
+                  </div>
+                  <div class="row justify-content-end">
+                    <div id="total" class="col-4">
+                      Total:
                     </div>
                   </div>
                 </div>
+
               </div>              
             `)
 
             $('#summary-table').append(
               $.map(data['products'], function(row, i) {    
                 return (
-                  '<tr class="col-md-12">' +
+                  '<tr class="col-md">' +
                     '<td class="col-md">' + data.products[i].name_title + '</td>' +
                     '<td class="col-md">' + data.products[i].product_quantity + '</td>' +
                     '<td class="col-md">' + data.products[i].quantity_price + '</td>' +                      
                   '</tr>'
                 )})    
-            )
+            )            
             
             // Scroll to bottom after reply
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
-          };
+            /******************************************
+             * Logic for the order summary functions
+             ******************************************/            
+            // tax and totalling
+            const TaxRate = 0.1;
+            var subTotal = grabPriceValues();
+            var tax = calculateTax();            
+
+            // grabs prices from order-summary table and adds them up
+            function grabPriceValues() {
+              var table = document.getElementById("summary-table");
+              //console.log(typeof table);    
+              sumVal = 0;  
+              // starts at one because its counting header row
+              for(var i = 1; i < table.rows.length; i++) {
+                sumVal = sumVal + parseFloat(table.rows[i].cells[2].innerHTML);
+              }    
+              return sumVal;  
+            }
+
+            // calculates tax based on subtotal
+            function calculateTax() {
+              return ((subTotal * TaxRate));
+            }            
+            
+            $('#subtotal').append('$' + subTotal);
+            $('#tax').append('$' + tax.toFixed(2));
+            $('#total').append('$' + (subTotal + tax).toFixed(2));
+
+            // Time function
+            var d = new Date();
+            var curr_hour = d.getHours();
+            var a_p = (curr_hour == 12) ? "AM" : "PM";
+
+            if (curr_hour == 0) curr_hour = 12;
+            if (curr_hour > 12) curr_hour = curr_hour - 12;
+
+            // toString() to concatenate the 0 if length == 1
+            var curr_min = d.getMinutes().toString();
+
+            if (curr_min.length == 1) {
+              curr_min = '0' + curr_min;
+            }
+
+            $('#order-date').append(
+              d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear() + ' at ' + curr_hour + ':' + curr_min + a_p  
+            );
+
+          }; // end of handle_response_new
 
           console.log(data);
           alert('Thank you for placing your order');
 
-        });
-
-        // Here is where we can returned serialized array?
-        //return $(this).serializeArray();
+        }); // end of form submit jquery function
+        
 
     } // end of else for bot reply
 

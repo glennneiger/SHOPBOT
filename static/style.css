@@ -43,3 +43,11 @@ body,html {
 #order-btn {
   float: right;
 }
+
+#order-summary p {
+  text-align: right;
+}
+
+#total {
+  background-color: grey;
+}
