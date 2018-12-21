@@ -114,6 +114,8 @@ function submit_message(message) {
           var data = $(this).serializeArray();  
           var selectedProducts = [];           
           
+          // goes through each product in list and if they have a quantity (element.value)
+          // append it to list of purchased products to be sent in post
           data.forEach(element => { 
             if (element.value === '' || element.value === '0') {
               //console.log('you got 0 value');
@@ -122,12 +124,14 @@ function submit_message(message) {
             }
           });
 
+          // convert selected products to json string or else you'll get error
+          selectedProducts = JSON.stringify(selectedProducts);
+
           // post form data as serialized array to another url to save the order
           $.post( "/order_summary", {
             message: selectedProducts
             //socketId: pusher.connection.socket_id // do we need this?
-          }, handle_response_new);         
-
+          }, handle_response_new);
 
           function handle_response_new(data) {
             
