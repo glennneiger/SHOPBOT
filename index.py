@@ -36,6 +36,7 @@ def get_product_detail():
     if  data['queryResult']['action'] == "productQuery":
         # name, phone-num ,email of the user
 
+        global name
         name = data['queryResult']['parameters']['given-name']
         phone_num =  data['queryResult']['parameters']['phone-number']
         email_id = data['queryResult']['parameters']['email']
@@ -107,6 +108,10 @@ def get_product_detail():
         global summary_list
         summary_list = []
 
+        #adding the name of the user as a json object to summary_list
+        name_user = {'name':name}
+        summary_list.append(name_user)
+
         column_names_summary = ['name_title', 'quantity', 'list_price', 'price']
         # print(product_summary[1][1])
 
@@ -127,6 +132,8 @@ def get_product_detail():
         for k, v in summary_new.items():
             # l = {}; l[k]=v
             summary_list.append(v)
+
+        #adding name of the user to the json object.
         print('my summary list is {}, type is {}'.format(summary_list, type(summary_list)))
         ######################################################################################################################
 
@@ -268,8 +275,8 @@ def order_summary():
 
     order  = request.form['message'] # should have product_id and quantity info in a json object
     order = json.loads(order)
-    #print(type(order))
-    #print(order)
+    print(type(order))
+    print(order)
 
     sql_order_summary(userID, order)
     # storing that order info in sql server

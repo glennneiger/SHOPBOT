@@ -40,26 +40,145 @@ function submit_message(message) {
       // append the bot repsonse to the div
       console.log(data.message)
       //var obj = JSON.parse(data.message);
-      if(data.call=='notwebhook') {
-            $('.chat-container').append(`
-                <div class="chat-message col-md-5 offset-md-7 bot-message">
-                    ${data.message}
-                </div>
-            `)
-            $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+      if (data.call == 'notwebhook') {
+          console.log('notwebhook was hit');
+          $('.chat-container').append(`
+              <div class="chat-message col-md-5 offset-md-7 bot-message">
+                  ${data.message}
+              </div>
+          `)
 
+          // Scroll to bottom after reply
+          $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
       }
 
-      else if(data.call == 'summary') {
+      else if (data.call == 'summary') {
+        console.log('summary was hit');
+        // Order Summary Table
+        $('.chat-container').append(`
+        <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
+          <h3>Ordered by: ${data.products[0].name}</h3>
+          <h5 id="order-date">Ordered on: </h5>
+          <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="summary-table">
+            <thead>
+              <tr class="col-md">
+                <th class="col-md">Name</th>
+                <th class="col-md">Each</th>
+                <th class="col-md">Quantity</th>
+                <th class="col-md">Total</th>
+              </tr>
+            </thead>
+          </table>
+          <div id="totals-container" class="container">
+            <div class="row justify-content-end">
+              <div id="subtotal" class="col-4">
+                Subtotal:
+              </div>
+            </div>
+            <div class="row justify-content-end">
+              <div id="tax" class="col-4">
+                Tax:
+              </div>
+            </div>
+            <div class="row justify-content-end">
+              <div id="total" class="col-4">
+                Total:
+              </div>
+            </div>
+          </div>
+        </div>
+      `)
+
+      //console.log(data['products'].slice(1));
+
+      //var newArr = data['products'].slice(1);
+
+      /*
+      $('#summary-table').append(
+        $.map(newArr, function(row, i) {
+          return (
+            '<tr class="col-md">' +
+              '<td class="col-md">' + newArr[i].name_title + '</td>' + // Name
+              '<td class="col-md">' + newArr[i].list_price + '</td>' + // Each
+              '<td class="col-md">' + newArr[i].quantity + '</td>' + // Quantity
+              '<td class="col-md">' + newArr[i].price + '</td>' + // Total (of one product * qty)
+            '</tr>'
+          )})
+      )
+      */
+
+      var newArr = data['products'];
+      for (let i = 0; i < newArr.length; i++) {
+        $('#summary-table').append(
+            '<tr class="col-md">' +
+              '<td class="col-md">' + newArr[i].name_title + '</td>' + // Name
+              '<td class="col-md">' + newArr[i].list_price + '</td>' + // Each
+              '<td class="col-md">' + newArr[i].quantity + '</td>' + // Quantity
+              '<td class="col-md">' + newArr[i].price + '</td>' + // Total (of one product * qty)
+            '</tr>'
+
+        )
+      }
 
 
+      // Scroll to bottom after reply
+      $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+
+      /******************************************
+       * Logic for the order summary functions
+       ******************************************/
+      // tax and totalling
+
+      var TaxRate = 0.1;
+      var subTotal = grabPriceValues();
+      var tax = calculateTax();
+
+      // grabs prices from order-summary table and adds them up
+      function grabPriceValues() {
+        var table = document.getElementById("summary-table");
+        //console.log(typeof table);
+        var sumVal = 0;
+        // starts at one because its counting header row
+        for(var i = 1; i < table.rows.length; i++) {
+          sumVal = sumVal + parseFloat(table.rows[i].cells[3].innerHTML);
+        }
+        return sumVal;
+      }
+
+      // calculates tax based on subtotal
+      function calculateTax() {
+        return ((subTotal * TaxRate));
+      }
+
+      $('#subtotal').append(subTotal);
+      $('#tax').append(tax);
+      $('#total').append((subTotal + tax));
+
+      // Time function
+      var d = new Date();
+      var curr_hour = d.getHours();
+      var a_p = (curr_hour == 12) ? "AM" : "PM";
+
+      if (curr_hour == 0) curr_hour = 12;
+      if (curr_hour > 12) curr_hour = curr_hour - 12;
+
+      // toString() to concatenate the 0 if length == 1
+      var curr_min = d.getMinutes().toString();
+
+      if (curr_min.length == 1) {
+        curr_min = '0' + curr_min;
+      }
+
+      $('#order-date').append(
+        d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear() + ' at ' + curr_hour + ':' + curr_min + a_p
+      );
 
 
-
-      }else {
+      } else {
           //var obj = JSON.parse(data.message);
+          console.log('prod table/last else was hit');
           $('.chat-container').append(`
-            <form>
+            <form id="myform">
                 <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
                     <h2> Your Top ${data.rows} Products</h2>
                     <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="product-table">
@@ -86,12 +205,10 @@ function submit_message(message) {
                     </div>
                 </div>
             </form>
-            `)
+          `)
 
           $('#product-table').append(
-
             $.map(data['products'], function(row, i) {
-
               return (
                 '<tr class="col-md-12">' +
                   // was product ID column here
@@ -106,35 +223,47 @@ function submit_message(message) {
                   '</td>' +
                 '</tr>'
               )})
+          );
 
-          )
+          // Scroll to bottom after reply
+          $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
 
           // This is the logic for when the table of products is submitted, it will return
           // a product id and qty inputted as JSON object, for now it is just console logging it
-          $("form").submit(function( event ) {
+          $("#myform").submit(function( event ) {
             event.preventDefault();
-            var data = JSON.stringify($(this).serializeArray());
+            var data = $(this).serializeArray();
+            var selectedProducts = [];
+
+            // goes through each product in list and if they have a quantity (element.value)
+            // append it to list of purchased products to be sent in post
+            data.forEach(element => {
+              if (element.value === '' || element.value === '0') {
+                //console.log('you got 0 value');
+              } else {
+                selectedProducts.push(element);
+              }
+            });
+
+            // convert selected products to json string or else you'll get error
+            selectedProducts = JSON.stringify(selectedProducts);
 
             // post form data as serialized array to another url to save the order
             $.post( "/order_summary", {
-              message: data
+              message: selectedProducts
               //socketId: pusher.connection.socket_id // do we need this?
             }, handle_response_new);
 
             function handle_response_new(data) {
-              // TODO some logic here either in front or back to return total price from quantity of selected rows
 
               $('.chat-container').append(`
                 <div class="chat-message col-md-5 offset-md-7 bot-message">
                     ${data.message}
-
                 </div>
               `)
             };
 
             console.log(data);
-            alert('Thank you for placing your order');
-
           });
 
           // Here is where we can returned serialized array?
@@ -145,9 +274,9 @@ function submit_message(message) {
       // remove the loading indicator
       $( "#loading" ).remove();
 
+    } // end of handle_response
 
-    }
-}
+} // end of submit_message
 
 $('#target').on('submit', function(e){
     e.preventDefault();
