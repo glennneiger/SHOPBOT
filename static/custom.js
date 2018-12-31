@@ -19,7 +19,7 @@ const channel = pusher.subscribe('RETAIL_BOT');
     // Append bot message
     $('.chat-container').append(`
         <div class="chat-message col-md-5 offset-md-7 bot-message">
-            //${data.message}
+            ${data.message}
         </div>
     `)
 });
@@ -43,6 +43,7 @@ function submit_message(message) {
       if (data.call == 'notwebhook') {
           console.log('notwebhook was hit');
           $('.chat-container').append(`
+
               <div class="chat-message col-md-5 offset-md-7 bot-message">
                   ${data.message}
               </div>
@@ -56,8 +57,9 @@ function submit_message(message) {
         console.log('summary was hit');
         // Order Summary Table
         $('.chat-container').append(`
+
         <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
-          <h3>Ordered by: ${data.products[0].name}</h3>
+          <h3>Ordered by: ${data.name}</h3>
           <h5 id="order-date">Ordered on: </h5>
           <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="summary-table">
             <thead>
@@ -87,7 +89,7 @@ function submit_message(message) {
             </div>
           </div>
         </div>
-      `)
+
 
       //console.log(data['products'].slice(1));
 
@@ -173,6 +175,7 @@ function submit_message(message) {
         d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear() + ' at ' + curr_hour + ':' + curr_min + a_p
       );
 
+     `)
 
       } else {
           //var obj = JSON.parse(data.message);

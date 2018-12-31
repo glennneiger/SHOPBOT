@@ -1,6 +1,7 @@
 # /index.py
 
 from flask import Flask, request, jsonify, render_template
+from functools import wraps
 import os
 import dialogflow
 import requests
@@ -17,7 +18,10 @@ pusher_client = pusher.Pusher(
         ssl=True)
 
 app = Flask(__name__)
-
+global user_id_dict, cart, run, orderID
+user_id_dict = {}
+cart={}
+run = 0
 
 @app.route('/')
 def index():
@@ -30,19 +34,37 @@ def get_product_detail():
 
     #getting the request from dialogflow
     data = request.get_json(silent=True)
-    print(data)
+    #print(data)
     #data.get("result").get("action") == "productQuery"
 
-    if  data['queryResult']['action'] == "productQuery":
-        # name, phone-num ,email of the user
-
+    if data['queryResult']['action'] == "WelcomeIntent":
         global name
         name = data['queryResult']['parameters']['given-name']
-        phone_num =  data['queryResult']['parameters']['phone-number']
+        phone_num = data['queryResult']['parameters']['phone-number']
         email_id = data['queryResult']['parameters']['email']
-        print(type(name)); print(type(phone_num)); print(type(email_id))
 
-        sql_user_info(name,phone_num,email_id)
+        ################################################################################
+        ##check if this user has already a user- id
+        ###############################################################################
+
+        sql_user_info(name, phone_num, email_id)
+
+        response = """
+                    What can I do for you today?  Do you need product information or place an order
+                    """
+        # response = product_summary
+        reply = {
+            "fulfillmentText": response
+        }
+
+        return jsonify(reply)
+
+
+    elif  data['queryResult']['action'] == "productQuery":
+        # name, phone-num ,email of the user
+
+
+
 
     #if bool(set(list(data['queryResult']['parameters'].keys())) & set(['ProductCategory','userCategory','Product-type'])):
 
@@ -109,8 +131,8 @@ def get_product_detail():
         summary_list = []
 
         #adding the name of the user as a json object to summary_list
-        name_user = {'name':name}
-        summary_list.append(name_user)
+        #name_user = {'name':name}
+        #summary_list.append(name_user)
 
         column_names_summary = ['name_title', 'quantity', 'list_price', 'price']
         # print(product_summary[1][1])
@@ -147,8 +169,15 @@ def get_product_detail():
 
         return jsonify(reply)
 
-    
+# decorator function which can be used by any function----------------change 1
+def run_once(function):
 
+    def wrapper(*args,**kwargs):
+        print("wrapper ran this before calling ")
+        return function(*args,**kwargs)
+    wrapper.has_run = False
+    return wrapper
+#################################################################################
 def intent_hash(x):
     str= x
     result = hashlib.md5(str.encode())
@@ -179,12 +208,14 @@ def sql_product_info(x,y,z):
         products[i] = row
         i+=1
     return products
-
+@check_userid
 def sql_user_info(name, phone_num, email_id):
     global userID
     userID = str(user_id())
     #print(type(userID))
     phone_num = str(phone_num)
+    user_id_dict[userID]  = [name,phone_num,email_id]
+
     connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
                                   trusted_connection='yes')
     cursor = connection.cursor()
@@ -195,9 +226,26 @@ def sql_user_info(name, phone_num, email_id):
     connection.close()
     return 'done'
 
+############################################################################################################ decorator
+def check_userid(sql_user_info):
+
+    @wraps(sql_user_info)
+    def wrapper(name,phone_num,email_id):
+        if [name,phone_num,email_id] not in user_id_dict.values():
+            return sql_user_info(name,phone_num,email_id)
+        else:
+            return 'user-id is present in the database'
+    return wrapper
+#####################################################################################################################
+
 def sql_order_summary(userID, product_quantity):
-    global orderID
-    orderID = str(order_id())
+    global run
+    if run == 0:
+        global orderID
+        orderID = str(order_id())
+        run+=1
+    else:
+        orderID = orderID
     connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
                                   trusted_connection='yes')
     cursor = connection.cursor()
@@ -221,7 +269,7 @@ def user_order_summary():
     SQLCommand = (
         " sp_userOrderSummary ?")
     # SQLCommand = ("SELECT AVG(list_price) FROM JCPENNY WHERE Product_Category = ?")
-
+    global userID
     Values = [str(userID)]
     cursor.execute(SQLCommand, Values)
     # result = cursor.fetchone()
@@ -236,10 +284,11 @@ def user_order_summary():
 
 
 def user_id():
-    return random.randint(1,101)#random userid
+
+    return random.randint(1,1001)#random userid
 
 def order_id():
-    return random.randint(1,101) # random orderid
+    return random.randint(1,1001) # random orderid
 
 
 # USER SUBMITS A MESSAGE, MESSAGE WILL BE SENT TO DIALOGFLOW TO DETECT THE
@@ -275,6 +324,9 @@ def order_summary():
 
     order  = request.form['message'] # should have product_id and quantity info in a json object
     order = json.loads(order)
+    #global userID
+
+
     print(type(order))
     print(order)
 
@@ -306,7 +358,7 @@ def send_message():
 
     elif "order summary" in fulfillment_text:
         response_text = {"message": fulfillment_text, "call": "summary", "products": summary_list,
-                         "rows": len(order_summary_new)}
+                         "rows": len(order_summary_new),"name": name}
 
 
 
