@@ -19,7 +19,7 @@ const channel = pusher.subscribe('RETAIL_BOT');
     // Append bot message
     $('.chat-container').append(`
         <div class="chat-message col-md-5 offset-md-7 bot-message">
-            ${data.message}
+            //${data.message}
         </div>
     `)
 });
@@ -54,41 +54,47 @@ function submit_message(message) {
       }
 
       else if (data.call == 'summary') {
+
         console.log('summary was hit');
+
+        var table_summary =  (data.run).toString();
+        var varid = "summary-table"+table_summary
+        console.log("summary-table"+table_summary)
         // Order Summary Table
         $('.chat-container').append(`
 
         <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
           <h3>Ordered by: ${data.name}</h3>
-          <h5 id="order-date">Ordered on: </h5>
-          <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="summary-table">
+          <h5 id="order-date"+${table_summary}>Ordered on: </h5>
+          <table class="table table-sm table-responsive table-bordered table-striped table-hover" id=${table_summary} >
             <thead>
-              <tr class="col-md">
+              <tr class="col-md" >
                 <th class="col-md">Name</th>
-                <th class="col-md">Each</th>
-                <th class="col-md">Quantity</th>
-                <th class="col-md">Total</th>
+                <th class="col-md" >Each</th>
+                <th class="col-md" >Quantity</th>
+                <th class="col-md" >Total</th>
               </tr>
             </thead>
           </table>
-          <div id="totals-container" class="container">
+          <div id="totals-container"${table_summary} class="container">
             <div class="row justify-content-end">
-              <div id="subtotal" class="col-4">
+              <div id="subtotal"${table_summary} class="col-4">
                 Subtotal:
               </div>
             </div>
             <div class="row justify-content-end">
-              <div id="tax" class="col-4">
+              <div id="tax"${table_summary} class="col-4">
                 Tax:
               </div>
             </div>
             <div class="row justify-content-end">
-              <div id="total" class="col-4">
+              <div id="total"${table_summary} class="col-4">
                 Total:
               </div>
             </div>
           </div>
         </div>
+        `)
 
 
       //console.log(data['products'].slice(1));
@@ -96,7 +102,7 @@ function submit_message(message) {
       //var newArr = data['products'].slice(1);
 
       /*
-      $('#summary-table').append(
+      $('#summary-table'+table_summary.append(
         $.map(newArr, function(row, i) {
           return (
             '<tr class="col-md">' +
@@ -111,12 +117,15 @@ function submit_message(message) {
 
       var newArr = data['products'];
       for (let i = 0; i < newArr.length; i++) {
-        $('#summary-table').append(
-            '<tr class="col-md">' +
-              '<td class="col-md">' + newArr[i].name_title + '</td>' + // Name
-              '<td class="col-md">' + newArr[i].list_price + '</td>' + // Each
-              '<td class="col-md">' + newArr[i].quantity + '</td>' + // Quantity
-              '<td class="col-md">' + newArr[i].price + '</td>' + // Total (of one product * qty)
+      console.log('#summary-table'+table_summary);
+      //console.log(' + table_summary + ' );
+      //var panelId = $(this).attr
+        $("#"+table_summary).append(
+            '<tr class="col-md" id="row' + table_summary + '">' +
+              '<td class="col-md" id="name'+ table_summary + '">' + newArr[i].name_title + '</td>' + // Name
+              '<td class="col-md" id="each'+ table_summary + '">' + newArr[i].list_price + '</td>' + // Each
+              '<td class="col-md" id="qnty'+ table_summary + '">' + newArr[i].quantity + '</td>' + // Quantity
+              '<td class="col-md" id="total'+ table_summary + '">' + newArr[i].price + '</td>' + // Total (of one product * qty)
             '</tr>'
 
         )
@@ -131,14 +140,20 @@ function submit_message(message) {
        ******************************************/
       // tax and totalling
 
+      /*
       var TaxRate = 0.1;
       var subTotal = grabPriceValues();
       var tax = calculateTax();
 
       // grabs prices from order-summary table and adds them up
       function grabPriceValues() {
-        var table = document.getElementById("summary-table");
-        //console.log(typeof table);
+        console.log("summary-table"+table_summary);
+        var x = "summary-table"+table_summary
+        console.log(typeof x);
+
+
+        var table = document.getElementById(x).value;
+        console.log(table);
         var sumVal = 0;
         // starts at one because its counting header row
         for(var i = 1; i < table.rows.length; i++) {
@@ -152,9 +167,9 @@ function submit_message(message) {
         return ((subTotal * TaxRate));
       }
 
-      $('#subtotal').append(subTotal);
-      $('#tax').append(tax);
-      $('#total').append((subTotal + tax));
+      $('#subtotal'+table_summary).append(subTotal);
+      $('#tax'+table_summary).append(tax);
+      $('#total'+table_summary).append((subTotal + tax));
 
       // Time function
       var d = new Date();
@@ -171,11 +186,11 @@ function submit_message(message) {
         curr_min = '0' + curr_min;
       }
 
-      $('#order-date').append(
+      $('#order-date'+table_summary).append(
         d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear() + ' at ' + curr_hour + ':' + curr_min + a_p
-      );
+      );*/
 
-     `)
+
 
       } else {
           //var obj = JSON.parse(data.message);

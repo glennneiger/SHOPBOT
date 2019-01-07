@@ -18,10 +18,12 @@ pusher_client = pusher.Pusher(
         ssl=True)
 
 app = Flask(__name__)
-global user_id_dict, cart, run, orderID
+global user_id_dict, cart, run, orderID,summary_run,product_table_run
 user_id_dict = {}
 cart={}
 run = 0
+summary_run = 0
+product_table_run = 0
 
 @app.route('/')
 def index():
@@ -191,6 +193,9 @@ def sql_product_info(x,y,z):
     :return: information about the product
     """
     #hash_output = intent_hash(x)
+    global product_table_run
+    product_table_run+=1
+
     connection = pypyodbc.connect(DRIVER= '{SQL Server}', SERVER = 'LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB', trusted_connection='yes')
     cursor = connection.cursor()
     SQLCommand = (" SELECT TOP 5 * FROM ( SELECT product_id, name_title, description , sale_price,list_price, Reviews FROM JCPENNY WHERE Product_Category = ?  AND User_Type = ?  AND Product_Type = ?) T ORDER BY list_price DESC"  )
@@ -208,7 +213,7 @@ def sql_product_info(x,y,z):
         products[i] = row
         i+=1
     return products
-@check_userid
+#@check_userid
 def sql_user_info(name, phone_num, email_id):
     global userID
     userID = str(user_id())
@@ -262,6 +267,8 @@ def sql_order_summary(userID, product_quantity):
     return 'done'
 
 def user_order_summary():
+    global summary_run
+    summary_run+=1
 
     connection = pypyodbc.connect(DRIVER='{SQL Server}', SERVER='LAPTOP-1U1BRRQD\REVANTHSQL', DATABASE='RETAIL_DB',
                                   trusted_connection='yes')
@@ -354,10 +361,11 @@ def send_message():
         #print(product_summary[1][0])
 
 
-        response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : products_list, "rows":len(product_new) }
+        response_text = { "message":  fulfillment_text, "call" : "webhook", "products" : products_list,"run":product_table_run,
+                          "rows":len(product_new) }
 
     elif "order summary" in fulfillment_text:
-        response_text = {"message": fulfillment_text, "call": "summary", "products": summary_list,
+        response_text = {"message": fulfillment_text, "call": "summary", "products": summary_list, "run": summary_run,
                          "rows": len(order_summary_new),"name": name}
 
 
