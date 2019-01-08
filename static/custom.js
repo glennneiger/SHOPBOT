@@ -25,7 +25,7 @@ channel.bind('new_message', function(data) {
 });
 
 
-//submit_mess@ge will be invoked once the user submits the message
+//submit_message will be invoked once the user submits the message
 function submit_message(message) {
 
     // This should scroll to bottom of chat-container each time a message is submitted
@@ -66,7 +66,7 @@ function submit_message(message) {
         <div class="chat-message col-md-20 offset-md-17 bot-message" style="width: 100%;">
           <h3>Ordered by: ${data.name}</h3>
           <h5 id="order-date"+${table_summary}>Ordered on: </h5>
-          <table class="table table-sm table-responsive table-bordered table-striped table-hover" id=${table_summary} >
+          <table class="table table-sm table-responsive table-bordered table-striped table-hover" id="${table_summary}" >
             <thead>
               <tr class="col-md" >
                 <th class="col-md">Name</th>
@@ -76,9 +76,10 @@ function submit_message(message) {
               </tr>
             </thead>
           </table>
+          
           <div id="totals-container"${table_summary} class="container">
             <div class="row justify-content-end">
-              <div id="subtotal"${table_summary} class="col-4">
+              <div id="subtotal${table_summary}" class="col-4">
                 Subtotal:
               </div>
             </div>
@@ -140,7 +141,7 @@ function submit_message(message) {
        ******************************************/
       // tax and totalling
 
-      /*
+      
       var TaxRate = 0.1;
       var subTotal = grabPriceValues();
       var tax = calculateTax();
@@ -188,7 +189,8 @@ function submit_message(message) {
 
       $('#order-date'+table_summary).append(
         d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear() + ' at ' + curr_hour + ':' + curr_min + a_p
-      );*/
+      );
+      
 
           // post form data as serialized array to another url to save the order
           $.post( "/order_summary", {
